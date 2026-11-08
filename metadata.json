@@ -1,0 +1,6 @@
+{
+  "name": "Миний танилцуулга — Зоригт",
+  "description": "Зоригт — Тоглоом хөгжүүлэгчийн танилцуулга, мөрөөдөл, ур чадвар, төлөвлөгөө болон Миний төслүүд (JavaScript).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1978 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Миний танилцуулга — Зоригт</title>
+    <meta name="description" content="Зоригт — Тоглоом хөгжүүлэгчийн танилцуулга, мөрөөдөл, ур чадвар, төлөвлөгөө болон Миний төслүүд (JavaScript)." />
+    <meta property="og:title" content="Миний танилцуулга — Зоригт" />
+    <meta property="og:description" content="Зоригт — Тоглоом хөгжүүлэгчийн танилцуулга, мөрөөдөл, ур чадвар, төлөвлөгөө болон Миний төслүүд (JavaScript)." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cg transform='rotate(-30 12 12)'%3E%3Ccircle cx='7.3' cy='3.2' r='1.45'/%3E%3Crect x='5.5' y='4.7' width='3.6' height='14.6' rx='1.8'/%3E%3Crect x='14.9' y='4.7' width='3.6' height='14.6' rx='1.8'/%3E%3Ccircle cx='16.7' cy='20.8' r='1.45'/%3E%3C/g%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+
+    <style>
+      /* Force pure black background immediately */
+      html, body {
+        background: #000000 !important;
+        color: #ffffff;
+      }
+
+      :root {
+        --bg: #000000;
+        --text: #ffffff;
+        --muted: #9a9a9a;
+        --stat: #d8d8d8;
+        --accent: #f26b1d;
+        --border: rgba(255, 255, 255, 0.16);
+        --border-soft: rgba(255, 255, 255, 0.1);
+        --card-bg: rgba(14, 14, 16, 0.72);
+
+        --logo: 16px;
+        --logo-mark: 22px;
+        --nav: 13.5px;
+        --nav-h: 40px;
+        --btn: 13.5px;
+        --btn-h: 40px;
+        --hero-btn-h: 44px;
+        --h1: 46px;
+        --lede: 16px;
+        --badge: 12.5px;
+        --header-y: 18px;
+        --header-x: 36px;
+        --max-w: 1200px;
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background: #000000;
+      }
+
+      body {
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        overflow-x: hidden;
+        position: relative;
+        background: #000000;
+        color: #ffffff;
+        min-height: 100vh;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button, input, textarea {
+        font-family: inherit;
+        color: inherit;
+      }
+
+      /* Noise grain overlay */
+      .grain {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 100;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+      }
+
+      /* Ambient glow backdrop */
+      .ambient-glow {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .ambient-glow::before {
+        content: "";
+        position: absolute;
+        top: -150px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 800px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(242, 107, 29, 0.08) 0%, rgba(90, 110, 240, 0.04) 50%, transparent 80%);
+        filter: blur(80px);
+      }
+      .ambient-glow::after {
+        content: "";
+        position: absolute;
+        bottom: 20%;
+        right: -100px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(140, 160, 255, 0.04) 0%, transparent 70%);
+        filter: blur(100px);
+      }
+
+      /* Container */
+      .container {
+        max-width: var(--max-w);
+        margin: 0 auto;
+        padding: 0 24px;
+        width: 100%;
+      }
+
+      /* Sticky Sleek Header */
+      header.header {
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: var(--header-y) var(--header-x);
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        transition: padding 0.3s ease;
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        justify-self: start;
+        font-size: var(--logo);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+      }
+
+      .logo svg {
+        width: var(--logo-mark);
+        height: var(--logo-mark);
+        display: block;
+        flex-shrink: 0;
+      }
+
+      .logo-suffix {
+        font-weight: 400;
+        color: #9a9a9a;
+      }
+
+      /* Center nav with liquid-metal pills */
+      #site-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-self: center;
+      }
+
+      #site-nav a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--nav-h);
+        padding: 0 16px;
+        border-radius: 7px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid rgba(198, 198, 198, 0.4);
+        background: linear-gradient(105deg, #070708 0%, #202024 48%, #3a3a40 100%);
+        color: #e5e5e5;
+        font-size: var(--nav);
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+        transition: all 0.35s ease;
+      }
+
+      #site-nav a::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.16) 50%, transparent 70%);
+        transform: translateX(-120%);
+        transition: transform 0.6s ease;
+        pointer-events: none;
+      }
+
+      #site-nav a:hover::before {
+        transform: translateX(120%);
+      }
+
+      #site-nav a:hover,
+      #site-nav a.is-active {
+        border-color: rgba(235, 235, 235, 0.85);
+        background: linear-gradient(105deg, #121214 0%, #303038 45%, #555562 100%);
+        box-shadow: 0 0 18px rgba(200, 210, 230, 0.18);
+        color: #ffffff;
+      }
+
+      .header-cta {
+        justify-self: end;
+      }
+
+      /* Burger */
+      .burger {
+        display: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: rgba(8, 8, 8, 0.55);
+        z-index: 60;
+        cursor: pointer;
+        transition: border-color 0.25s ease, background 0.25s ease;
+      }
+
+      .burger:hover {
+        border-color: rgba(255, 255, 255, 0.32);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .burger-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        width: 100%;
+        height: 100%;
+      }
+
+      .burger-bar {
+        width: 16px;
+        height: 1.5px;
+        background: #ffffff;
+        border-radius: 1px;
+        display: block;
+        transition: transform 0.25s ease, opacity 0.2s ease;
+      }
+
+      body.menu-open .burger-bar:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+
+      body.menu-open .burger-bar:nth-child(2) {
+        opacity: 0;
+      }
+
+      body.menu-open .burger-bar:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+
+      .menu-backdrop {
+        display: none;
+      }
+
+      /* Buttons: Liquid-glass language */
+      .btn {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: var(--btn-h);
+        padding: 0 18px;
+        border-radius: 6px;
+        font-size: var(--btn);
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.35s ease;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.45) 48%, transparent 76%);
+        transform: translateX(-130%);
+        transition: transform 0.65s ease;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .btn:hover::after {
+        transform: translateX(130%);
+      }
+
+      .btn-solid {
+        background: linear-gradient(180deg, #ffffff 0%, #e7e7e7 48%, #cfcfcf 100%);
+        color: #111111;
+        border: 1px solid #ffffff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      }
+
+      .btn-solid:hover {
+        background: linear-gradient(180deg, #ffffff 0%, #f3f6ff 42%, #d5def2 100%);
+        border-color: #f2f6ff;
+        box-shadow: inset 0 1px 0 #ffffff, 0 0 22px rgba(186, 208, 255, 0.35), 0 8px 18px rgba(255, 255, 255, 0.12);
+      }
+
+      .btn-ghost {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.45) 50%, rgba(160, 175, 200, 0.08));
+        color: #ffffff;
+        border: 1px solid rgba(198, 198, 198, 0.45);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      .btn-ghost:hover {
+        background: linear-gradient(135deg, rgba(210, 225, 255, 0.18), rgba(0, 0, 0, 0.35) 48%, rgba(180, 195, 220, 0.16));
+        border-color: rgba(220, 230, 255, 0.75);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 0 20px rgba(170, 200, 255, 0.22);
+      }
+
+      .hero-actions .btn {
+        height: var(--hero-btn-h);
+        padding: 0 22px;
+      }
+
+      /* Hero Section */
+      section.hero-section {
+        position: relative;
+        z-index: 1;
+        padding: 60px 0 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .hero-copy {
+        max-width: 860px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Sparkle Badge */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        padding: 9px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(120, 120, 130, 0.25) 0%, rgba(40, 40, 45, 0.4) 52%, rgba(10, 10, 12, 0.6) 100%);
+        backdrop-filter: blur(10px);
+        color: #f2f2f2;
+        font-size: var(--badge);
+        font-weight: 400;
+        letter-spacing: -0.01em;
+      }
+
+      .badge-star {
+        display: inline-block;
+        width: 17px;
+        height: 19px;
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 4px rgba(242, 107, 29, 0.6));
+      }
+
+      /* Hero Title */
+      .hero-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: var(--h1);
+        font-weight: 500;
+        letter-spacing: -0.04em;
+        line-height: 1.15;
+        color: #ffffff;
+      }
+
+      .headline-line {
+        display: block;
+        overflow: hidden;
+        padding: 0.04em 0.1em;
+      }
+
+      .hero-title em {
+        font-family: "Instrument Serif", "Times New Roman", Times, serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 1.1em;
+        letter-spacing: -0.02em;
+        color: #f26b1d;
+        display: inline-block;
+      }
+
+      /* Lede */
+      .lede {
+        max-width: 580px;
+        margin-top: 20px;
+        color: #9a9a9a;
+        font-size: var(--lede);
+        font-weight: 400;
+        line-height: 1.6;
+        letter-spacing: -0.015em;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      /* Hero Stats Row */
+      .hero-stats {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 60px;
+        padding: 20px 32px;
+        border-radius: 12px;
+        border: 1px solid var(--border-soft);
+        background: rgba(15, 15, 18, 0.4);
+        backdrop-filter: blur(12px);
+      }
+
+      .stat-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+        color: #d8d8d8;
+        white-space: nowrap;
+      }
+
+      .stat-item svg:not(.stat-icon-wide) {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      .stat-icon-wide {
+        width: 38px;
+        height: 21px;
+        flex-shrink: 0;
+      }
+
+      /* Section Common */
+      section.section {
+        position: relative;
+        z-index: 1;
+        padding: 80px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .section-header {
+        margin-bottom: 40px;
+      }
+
+      .section-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #f26b1d;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .section-title {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        color: #ffffff;
+      }
+
+      .section-subtitle {
+        color: #9a9a9a;
+        font-size: 15.5px;
+        margin-top: 8px;
+        max-width: 600px;
+      }
+
+      /* Dream Job & Intro Section */
+      .dream-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: 32px;
+        align-items: stretch;
+      }
+
+      .glass-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .glass-card:hover {
+        border-color: rgba(255, 255, 255, 0.28);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(242, 107, 29, 0.08);
+      }
+
+      .profile-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .profile-head {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .avatar-wrapper {
+        position: relative;
+        width: 88px;
+        height: 88px;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 2px solid rgba(242, 107, 29, 0.4);
+        box-shadow: 0 0 24px rgba(242, 107, 29, 0.2);
+        flex-shrink: 0;
+        background: #111;
+      }
+
+      .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .profile-info h3 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .profile-role-badge {
+        display: inline-block;
+        margin-top: 6px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(242, 107, 29, 0.15);
+        border: 1px solid rgba(242, 107, 29, 0.35);
+        color: #ff914d;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .quote-box {
+        margin: 20px 0;
+        padding: 16px 20px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 3px solid #f26b1d;
+        font-style: italic;
+        color: #e0e0e0;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .statement-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .statement-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14.5px;
+        color: #b5b5b5;
+      }
+
+      .statement-bullet {
+        color: #f26b1d;
+        font-weight: bold;
+      }
+
+      /* Video Card */
+      .video-card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .video-card h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .video-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: #080808;
+      }
+
+      .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      /* Skills & Plan Section */
+      .skills-plan-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .skills-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .skill-card {
+        padding: 18px 20px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .skill-card:hover {
+        transform: translateX(4px);
+        border-color: rgba(242, 107, 29, 0.4);
+      }
+
+      .skill-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(242, 107, 29, 0.2), rgba(0, 0, 0, 0.4));
+        border: 1px solid rgba(242, 107, 29, 0.3);
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        color: #ff914d;
+        flex-shrink: 0;
+      }
+
+      .skill-info h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .skill-info p {
+        font-size: 13.5px;
+        color: #9a9a9a;
+        margin-top: 3px;
+      }
+
+      /* Roadmap Timeline */
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin-top: 20px;
+        position: relative;
+        padding-left: 12px;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        bottom: 15px;
+        left: 20px;
+        width: 2px;
+        background: linear-gradient(180deg, #f26b1d 0%, rgba(242, 107, 29, 0.3) 50%, rgba(255, 255, 255, 0.1) 100%);
+      }
+
+      .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 18px;
+        position: relative;
+      }
+
+      .timeline-dot {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #000;
+        border: 3px solid #f26b1d;
+        box-shadow: 0 0 10px rgba(242, 107, 29, 0.5);
+        flex-shrink: 0;
+        margin-top: 3px;
+        z-index: 2;
+      }
+
+      .timeline-item:nth-child(2) .timeline-dot { border-color: #ffa15d; }
+      .timeline-item:nth-child(3) .timeline-dot { border-color: #b0c0ff; }
+      .timeline-item:nth-child(4) .timeline-dot { border-color: #8899cc; }
+
+      .timeline-content {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 14px 18px;
+        flex: 1;
+      }
+
+      .timeline-content .period-badge {
+        font-size: 11.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #f26b1d;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .timeline-content h4 {
+        font-size: 15px;
+        font-weight: 500;
+        color: #ffffff;
+      }
+
+      /* Projects Section (App Runner) */
+      .exercise-workspace {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 24px;
+        background: rgba(10, 10, 13, 0.8);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        min-height: 600px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Sidebar */
+      .exercise-sidebar {
+        background: rgba(14, 14, 18, 0.95);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        padding: 24px;
+      }
+
+      .sidebar-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .sidebar-head h3 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .count-badge {
+        font-size: 11.5px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #9a9a9a;
+      }
+
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .search-box input {
+        width: 100%;
+        height: 38px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 0 36px 0 34px;
+        font-size: 13.5px;
+        color: #ffffff;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .search-box input:focus {
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        color: #777;
+        font-size: 14px;
+        pointer-events: none;
+      }
+
+      .search-kbd {
+        position: absolute;
+        right: 10px;
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #888;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      /* Exercise / Project List */
+      .exercise-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+        flex: 1;
+        padding-right: 4px;
+        max-height: 520px;
+      }
+
+      .exercise-item {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .exercise-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      .exercise-item.is-active {
+        background: linear-gradient(90deg, rgba(242, 107, 29, 0.12) 0%, rgba(20, 20, 25, 0.8) 100%);
+        border-color: rgba(242, 107, 29, 0.35);
+      }
+
+      .exercise-item__tag {
+        font-size: 11px;
+        color: #f26b1d;
+        font-weight: 600;
+        margin-bottom: 2px;
+        letter-spacing: 0.04em;
+      }
+
+      .exercise-item__title {
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #ffffff;
+      }
+
+      /* Active Exercise Main View */
+      .exercise-main {
+        padding: 32px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: radial-gradient(circle at 100% 0%, rgba(242, 107, 29, 0.03) 0%, transparent 50%);
+      }
+
+      .workspace-topline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #9a9a9a;
+        margin-bottom: 20px;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 8px #10b981;
+      }
+
+      .exercise-intro {
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #f26b1d;
+        margin-bottom: 6px;
+      }
+
+      #exercise-title {
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        margin-bottom: 8px;
+      }
+
+      #exercise-description {
+        font-size: 14.5px;
+        color: #9a9a9a;
+        line-height: 1.5;
+        max-width: 680px;
+      }
+
+      /* Fields */
+      .fields {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field__label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #d0d0d0;
+      }
+
+      .field input {
+        height: 42px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 0 14px;
+        font-size: 14px;
+        color: #ffffff;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .field input:focus {
+        border-color: rgba(242, 107, 29, 0.6);
+        box-shadow: 0 0 14px rgba(242, 107, 29, 0.15);
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .field__hint {
+        font-size: 11.5px;
+        color: #777777;
+      }
+
+      /* Result Terminal */
+      .result-box {
+        margin-top: 24px;
+        border-radius: 10px;
+        background: #09090c;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+      }
+
+      .result-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .result-head-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: #d0d0d0;
+      }
+
+      .result-check {
+        color: #10b981;
+      }
+
+      .copy-btn {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 3px 8px;
+        font-size: 11px;
+        color: #9a9a9a;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+      }
+
+      .result-content {
+        padding: 18px 20px;
+        font-family: "JetBrains Mono", Consolas, monospace;
+        font-size: 14px;
+        color: #10b981;
+        white-space: pre-wrap;
+        line-height: 1.6;
+        max-height: 240px;
+        overflow-y: auto;
+      }
+
+      .result-box.result--error .result-content {
+        color: #ef4444;
+      }
+      .result-box.result--error .result-check {
+        color: #ef4444;
+      }
+
+      /* Footer */
+      footer.site-footer {
+        padding: 40px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: center;
+        color: #777777;
+        font-size: 13.5px;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        header.header {
+          grid-template-columns: 1fr auto auto;
+          gap: 12px;
+          padding: 16px 20px;
+        }
+
+        .burger {
+          display: grid;
+          place-items: center;
+          z-index: 95;
+        }
+
+        .header-cta {
+          display: none;
+        }
+
+        .menu-backdrop {
+          display: block;
+          position: fixed;
+          inset: 0;
+          z-index: 92;
+          background: rgba(0, 0, 0, 0.65);
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.28s ease;
+        }
+
+        body.menu-open .menu-backdrop {
+          opacity: 1;
+          visibility: visible;
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+        }
+
+        #site-nav {
+          display: flex;
+          flex-direction: column;
+          position: fixed;
+          inset: 0;
+          z-index: 93;
+          background: transparent;
+          justify-content: center;
+          align-items: center;
+          gap: 14px;
+          padding: 90px 24px 30px;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: all 0.28s ease;
+        }
+
+        body.menu-open #site-nav {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+        }
+
+        #site-nav a {
+          width: 100%;
+          max-width: 320px;
+          height: 52px;
+          font-size: 17px;
+          border-radius: 10px;
+        }
+
+        body.menu-open {
+          overflow: hidden;
+        }
+
+        .dream-grid, .skills-plan-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .exercise-workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .exercise-sidebar {
+          border-right: none;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          max-height: 380px;
+        }
+
+        .hero-stats {
+          flex-direction: column;
+          gap: 16px;
+          padding: 20px;
+        }
+
+        :root {
+          --h1: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body style="background:#000;color:#fff">
+    <!-- Grain overlay -->
+    <div class="grain"></div>
+
+    <!-- Ambient glow -->
+    <div class="ambient-glow"></div>
+
+    <!-- Header -->
+    <header class="header">
+      <!-- Logo -->
+      <a href="#top" class="logo" aria-label="Зоригт - Миний танилцуулга">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <g transform="rotate(-30 12 12)">
+            <circle cx="7.3" cy="3.2" r="1.45" />
+            <rect x="5.5" y="4.7" width="3.6" height="14.6" rx="1.8" />
+            <rect x="14.9" y="4.7" width="3.6" height="14.6" rx="1.8" />
+            <circle cx="16.7" cy="20.8" r="1.45" />
+          </g>
+        </svg>
+        <span>Зоригт<span class="logo-suffix">.dev</span></span>
+      </a>
+
+      <!-- Center navigation with liquid metal pills -->
+      <nav id="site-nav" aria-label="Primary">
+        <a href="#intro">Танилцуулга</a>
+        <a href="#dream-job">Мөрөөдлийн ажил</a>
+        <a href="#skills">Ур чадвар</a>
+        <a href="#plan">Төлөвлөгөө</a>
+        <a href="#projects">Миний төслүүд</a>
+      </nav>
+
+      <!-- Right CTA & Burger -->
+      <a href="#projects" class="btn btn-solid header-cta">Төслүүд үзэх</a>
+
+      <button type="button" class="burger" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">
+        <span class="burger-inner">
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+        </span>
+      </button>
+    </header>
+
+    <div class="menu-backdrop"></div>
+
+    <!-- Main Content Container -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-section container" id="top">
+        <div class="hero-copy" id="intro">
+          <!-- Sparkle Badge -->
+          <div class="badge">
+            <svg class="badge-star" viewBox="0 0 24 24" fill="#f26b1d" aria-hidden="true">
+              <path d="M12 2.6C12.55 2.6 12.88 3.15 13.08 4.7c.62 4.7 1.52 5.6 6.22 6.22 1.55.2 2.1.53 2.1 1.08s-.55.88-2.1 1.08c-4.7.62-5.6 1.52-6.22 6.22-.2 1.55-.53 2.1-1.08 2.1s-.88-.55-1.08-2.1c-.62-4.7-1.52-5.6-6.22-6.22C3.15 12.88 2.6 12.55 2.6 12s.55-.88 2.1-1.08c4.7-.62 5.6-1.52 6.22-6.22C11.12 3.15 11.45 2.6 12 2.6Z" />
+            </svg>
+            <span>Тоглоом хөгжүүлэгч болох аялал · Мөрөөдөл & Код</span>
+          </div>
+
+          <!-- Hero Title -->
+          <h1 class="hero-title">
+            <span class="headline-line">Сайн уу, намайг <em>Зоригт</em> гэдэг.</span>
+            <span class="headline-line">Ирээдүйн <em>тоглоом бүтээгч</em>.</span>
+          </h1>
+
+          <!-- Lede -->
+          <p class="lede">
+            15 жилийн дараа би тоглоом бүтээдэг хүн болно. Одоо энэ курстээ HTML, CSS, JavaScript суралцаж, өөрийн анхны тоглоомоо хийхээр шаргуу шамдан бэлдэж байна.
+          </p>
+
+          <!-- Hero Actions -->
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-solid">Миний төслүүд үзэх →</a>
+            <a href="#dream-job" class="btn btn-ghost">Мөрөөдлийн ажил & Видео</a>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="hero-stats">
+            <div class="stat-item">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="3.4" y="2.6" width="7.2" height="18.8" rx="3.6" fill="#f26b1d" fill-opacity="0.8" />
+                <rect x="13.4" y="2.6" width="7.2" height="18.8" rx="3.6" fill="#ffffff" fill-opacity="0.5" />
+                <rect x="9.2" y="10.9" width="5.6" height="2.2" rx="1.1" fill="#4a4a4a" />
+              </svg>
+              <span>14+ JavaScript төсөл</span>
+            </div>
+
+            <div class="stat-item">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6.2" fill="#ffffff" />
+                <path d="M12 7.1v7.4" stroke="#111111" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M8.15 12.35L12 16.2l3.85-3.85" stroke="#111111" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>15 жилийн зорилго: Тоглоом бүтээх</span>
+            </div>
+
+            <div class="stat-item">
+              <svg class="stat-icon-wide" viewBox="0 0 40 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g>
+                  <circle cx="10.2" cy="11" r="9.2" fill="#2b2b2b" />
+                  <ellipse cx="10.2" cy="12.1" rx="4.15" ry="3.7" fill="#f4f4f4" />
+                  <circle cx="8.8" cy="11.5" r="0.7" fill="#1a1a1a" />
+                  <circle cx="11.6" cy="11.5" r="0.7" fill="#1a1a1a" />
+                </g>
+                <g>
+                  <circle cx="20.2" cy="11" r="9.2" fill="#ffffff" />
+                  <circle cx="18" cy="9.8" r="1.7" fill="#111111" />
+                  <circle cx="22.4" cy="9.8" r="1.7" fill="#111111" />
+                  <ellipse cx="20.2" cy="12.2" rx="0.9" ry="0.6" fill="#111111" />
+                  <path d="M18.2 13.8c.8 1.1 3.2 1.1 4 0" stroke="#111111" stroke-width="1.2" stroke-linecap="round" fill="none" />
+                </g>
+                <g>
+                  <circle cx="30.2" cy="11" r="9.2" fill="#f26b1d" />
+                  <text x="30.2" y="15.1" font-family="'Inter', sans-serif" font-weight="700" font-size="12.5" fill="#ffffff" text-anchor="middle">e</text>
+                </g>
+              </svg>
+              <span>HTML · CSS · JAVAS суралцагч</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Dream Job & Identity -->
+      <section class="section container" id="dream-job">
+        <div class="section-header">
+          <span class="section-tag">Мөрөөдлийн мэргэжил · Dream Job</span>
+          <h2 class="section-title">Би яагаад энэ мэргэжлийг сонгосон бэ?</h2>
+          <p class="section-subtitle">Тоглоом хөгжүүлэгч болох миний чин хүсэл, мөрөөдөл болон сонирхолтой бичлэг.</p>
+        </div>
+
+        <div class="dream-grid">
+          <!-- Profile Card -->
+          <div class="glass-card profile-card">
+            <div>
+              <div class="profile-head">
+                <div class="avatar-wrapper">
+                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrzJa85t71rBFfOShYCUEps2Jy9ppiPhhrBj2MDjl4dg&s=10" alt="Зоригт" />
+                </div>
+                <div class="profile-info">
+                  <h3>Зоригт</h3>
+                  <span class="profile-role-badge">🎮 Тоглоом хөгжүүлэгч</span>
+                </div>
+              </div>
+
+              <div class="quote-box">
+                “15 жилийн дараа би тоглоом бүтээдэг хүн болно.”
+              </div>
+
+              <div class="statement-list">
+                <div class="statement-item">
+                  <span class="statement-bullet">✦</span>
+                  <span><strong>Мөрөөдөл:</strong> Тоглоом хөгжүүлэгч (Game Developer)</span>
+                </div>
+                <div class="statement-item">
+                  <span class="statement-bullet">✦</span>
+                  <span><strong>Одоогийн зорилго:</strong> Энэ курст HTML, CSS, JavaScript-ийг маш сайн суралцах</span>
+                </div>
+                <div class="statement-item">
+                  <span class="statement-bullet">✦</span>
+                  <span><strong>Алсын хараа:</strong> Дэлхийд танигдсан гайхалтай тоглоом бүтээх</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <a href="#projects" class="btn btn-ghost" style="width: 100%;">Миний хийсэн төслүүд үзэх</a>
+            </div>
+          </div>
+
+          <!-- Video Card -->
+          <div class="glass-card video-card">
+            <div>
+              <h3>
+                <span>🎬 Яагаад энэ ажил вэ?</span>
+              </h3>
+              <p style="color: #9a9a9a; font-size: 14px;">Тоглоом хөгжүүлэлтийн ертөнц, түүний сонирхолтой явцын тухай:</p>
+            </div>
+
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/XxxyGELApuQ?si=DkAqzJvoZVpzLmRI"
+                title="Яагаад энэ ажил вэ — YouTube player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Skills & Roadmap -->
+      <section class="section container" id="skills">
+        <div class="section-header">
+          <span class="section-tag">Хөгжил · Skills & Plans</span>
+          <h2 class="section-title">Хэрэгтэй ур чадвар & Миний төлөвлөгөө</h2>
+          <p class="section-subtitle">Тоглоом бүтээгч болохын тулд эзэмших ур чадварууд болон үе шаттай төлөвлөгөө.</p>
+        </div>
+
+        <div class="skills-plan-grid">
+          <!-- Skills Pillar -->
+          <div class="glass-card">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 6px;">🛠️ Хэрэгтэй ур чадвар</h3>
+            <p style="color: #9a9a9a; font-size: 14px;">(heregtei ur chadvar)</p>
+
+            <div class="skills-list">
+              <div class="skill-card">
+                <div class="skill-icon">&lt;/&gt;</div>
+                <div class="skill-info">
+                  <h4>Код бичих (kod bichih)</h4>
+                  <p>Програмчлалын үндэс, алгоритм, JavaScript болон тоглоомын хөдөлгүүрийн логик бичих.</p>
+                </div>
+              </div>
+
+              <div class="skill-card">
+                <div class="skill-icon">🎨</div>
+                <div class="skill-info">
+                  <h4>Зураг дизайн (zurag dizain)</h4>
+                  <p>Тоглоомын дүрүүд, орчин, UI интерфэйс болон визуаль арт бүтээх чадвар.</p>
+                </div>
+              </div>
+
+              <div class="skill-card">
+                <div class="skill-icon">🤝</div>
+                <div class="skill-info">
+                  <h4>Багаар ажиллах (bagaar ajillah)</h4>
+                  <p>Бусад дизайнерууд, хөгжүүлэгчидтэй хамтран ажиллаж, төслийг амжилттай дуусгах.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Timeline Pillar -->
+          <div class="glass-card" id="plan">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 6px;">📅 Миний төлөвлөгөө</h3>
+            <p style="color: #9a9a9a; font-size: 14px;">(minii tuluvluguu)</p>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <span class="period-badge">1. Одоо (odoo)</span>
+                  <h4>Энэ курст HTML, CSS, JAVAS сурах</h4>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <span class="period-badge">2. Энэ жил (ene jil)</span>
+                  <h4>Өөрийн анхны тоглоомоо хийнэ</h4>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <span class="period-badge">3. Сургуульд (Surguulid)</span>
+                  <h4>Мэдээлэл технологио улам сайжруулах</h4>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <span class="period-badge">4. Ирээдүйд (ireeduid)</span>
+                  <h4>Программын чиглэлээр их сургуульд сурч, амжилттай ажиллах</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: My Projects (formerly JavaScript Exercises) -->
+      <section class="section container" id="projects">
+        <div class="section-header">
+          <span class="section-tag">Бүтээлүүд · Portfolio Projects</span>
+          <h2 class="section-title">Миний төслүүд</h2>
+          <p class="section-subtitle">Бие даан хийсэн JavaScript төслүүдээ шууд ажиллуулж, утгаа оруулан үр дүнгээ шалгаарай.</p>
+        </div>
+
+        <div class="exercise-workspace">
+          <!-- Sidebar -->
+          <aside class="exercise-sidebar" aria-label="Төслүүд">
+            <div class="sidebar-head">
+              <h3>Төслүүд</h3>
+              <span class="count-badge" id="exercise-count">14 төсөл</span>
+            </div>
+
+            <!-- Search -->
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="search" id="search" placeholder="Төсөл хайх..." autocomplete="off" />
+              <kbd class="search-kbd">/</kbd>
+            </div>
+
+            <!-- Clean Project List -->
+            <nav class="exercise-list" id="exercise-list"></nav>
+          </aside>
+
+          <!-- Main Runner Panel -->
+          <div class="exercise-main" aria-live="polite">
+            <div>
+              <div class="workspace-topline">
+                <span class="status-dot"></span>
+                <span>Төсөл ажиллуулах талбар</span>
+              </div>
+
+              <form id="exercise-form">
+                <div class="exercise-intro">
+                  <p class="eyebrow" id="exercise-lesson-badge">СОНГОСОН ТӨСӨЛ</p>
+                  <h2 id="exercise-title" tabindex="-1">Амьдарсан хугацаа</h2>
+                  <p id="exercise-description">Насыг өдөр, цаг, минутаар ойролцоогоор тооцно.</p>
+                </div>
+
+                <div id="exercise-fields" class="fields"></div>
+
+                <button id="run-button" class="btn btn-solid" type="submit">
+                  <span>Ажиллуулах</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </form>
+
+              <!-- Result Box -->
+              <section id="result" class="result-box" hidden>
+                <div class="result-head">
+                  <div class="result-head-title">
+                    <span class="result-check" aria-hidden="true">✓</span>
+                    <span>Үр дүн</span>
+                  </div>
+                  <button type="button" class="copy-btn" id="copy-result-btn">Хуулах</button>
+                </div>
+                <pre id="result-content" class="result-content"></pre>
+              </section>
+            </div>
+
+            <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px; color: #777; display: flex; justify-content: space-between;">
+              <span>Утгаа оруулаад төслөө шууд шалгаарай.</span>
+              <span>JavaScript · ESNext</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <p><strong>Миний танилцуулга</strong> — Зоригт · Тоглоом хөгжүүлэгч болох аялал</p>
+        <p style="margin-top: 6px; font-size: 12.5px; color: #555;">HTML, CSS, JavaScript сургалтын төсөл · Бүх эрх хамгаалагдсан</p>
+      </div>
+    </footer>
+
+    <!-- Interactive Logic & All 14 Projects -->
+    <script>
+      (function() {
+        // Project Registry
+        const exercises = [
+          {
+            id: "lived-time",
+            projectTag: "Төсөл 01",
+            title: "Амьдарсан хугацаа",
+            description: "Насыг өдөр, цаг, минутаар ойролцоогоор тооцно.",
+            fields: [{ name: "age", label: "Хэдэн настай вэ?", integer: true, min: 0, max: 150 }],
+            run({ age }) {
+              const days = age * 365;
+              const hours = days * 24;
+              const minutes = hours * 60;
+              return `${age} нас = ${days.toLocaleString("mn-MN")} өдөр = ${hours.toLocaleString("mn-MN")} цаг = ${minutes.toLocaleString("mn-MN")} минут`;
+            }
+          },
+          {
+            id: "future-age",
+            projectTag: "Төсөл 02",
+            title: "Ирээдүйн нас",
+            description: "Төрсөн он болон ирээдүйн оноор тухайн үед хэдэн настайг тооцно.",
+            fields: [
+              { name: "birthYear", label: "Төрсөн он", integer: true, min: 1 },
+              { name: "futureYear", label: "Аль онд?", integer: true, min: 1 },
+            ],
+            run({ birthYear, futureYear }) {
+              if (futureYear < birthYear) throw new RangeError("Ирээдүйн он төрсөн оноос өмнө байж болохгүй.");
+              return `${futureYear} онд ${futureYear - birthYear} настай болно`;
+            }
+          },
+          {
+            id: "reverse-number",
+            projectTag: "Төсөл 03",
+            title: "Тонгорогсон тоо",
+            description: "4 оронтой тооны цифрүүдийн дарааллыг урвуулна.",
+            fields: [{ name: "number", label: "4 оронтой тоо", integer: true, min: 1000, max: 9999 }],
+            run({ number }) {
+              const reversed = Number(String(number).split("").reverse().join(""));
+              return `${number} → ${reversed}`;
+            }
+          },
+          {
+            id: "password-check",
+            projectTag: "Төсөл 04",
+            title: "Нууц үг",
+            description: "Шинэ нууц үгийг давтан оруулсан утгатай харьцуулна.",
+            fields: [
+              { name: "password", label: "Шинэ нууц үг", type: "password" },
+              { name: "confirmation", label: "Нууц үгээ дахин оруул", type: "password" },
+            ],
+            run({ password, confirmation }) {
+              return password === confirmation
+                ? "Нууц үг амжилттай солигдлоо"
+                : "Нууц үгээ зөв давтаж оруулаарай";
+            }
+          },
+          {
+            id: "grade",
+            projectTag: "Төсөл 05",
+            title: "Дүн",
+            description: "0–100 оноонд тохирох үсгэн дүнг тодорхойлно.",
+            fields: [{ name: "score", label: "Оноо (0–100)", min: 0, max: 100 }],
+            run({ score }) {
+              if (score >= 90) return "A (Онц)";
+              if (score >= 80) return "B (Сайн)";
+              if (score >= 70) return "C (Дунд)";
+              if (score >= 60) return "D (Хангалттай)";
+              return "F (Маш муу)";
+            }
+          },
+          {
+            id: "traffic-police",
+            projectTag: "Төсөл 06",
+            title: "Замын цагдаа",
+            description: "80 км/ц-ээс хэтэрсэн хурдны оноо болон эрх хасах эсэхийг тооцно.",
+            fields: [{ name: "speed", label: "Хурд (км/ц)", min: 0 }],
+            run({ speed }) {
+              if (speed <= 80) return "Хурд хэвийн (Зөрчилгүй)";
+              const points = Math.floor((speed - 80) / 5);
+              return points >= 5
+                ? `${points} оноо алдсан. Эрх хасагдсан!`
+                : `${points} оноо алдсан. Эрх хасагдаагүй.`;
+            }
+          },
+          {
+            id: "leap-year",
+            projectTag: "Төсөл 07",
+            title: "Өндөр жил",
+            description: "Оны өндөр жил эсэхийг Григорийн хуанлийн дүрмээр шалгана.",
+            fields: [{ name: "year", label: "Он", integer: true, min: 1 }],
+            run({ year }) {
+              const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+              return isLeapYear ? `${year} — өндөр жил (366 хоногтой)` : `${year} — энгийн жил (365 хоногтой)`;
+            }
+          },
+          {
+            id: "rating",
+            projectTag: "Төсөл 08",
+            title: "Үнэлгээ",
+            description: "1–5 хооронд үнэлгээ сонгоод одоор илэрхийлнэ.",
+            fields: [{ name: "rating", label: "Үнэлгээ (1–5)", integer: true, min: 1, max: 5 }],
+            run({ rating }) {
+              return "⭐".repeat(rating) + ` (${rating}/5)`;
+            }
+          },
+          {
+            id: "price-table",
+            projectTag: "Төсөл 09",
+            title: "Үнийн хүснэгт",
+            description: "Нэг ширхэгийн үнээр 1–10 ширхэгийн үнийг гаргана.",
+            fields: [{ name: "price", label: "Нэг ширхэгийн үнэ (₮)", min: 0 }],
+            run({ price }) {
+              return Array.from({ length: 10 }, (_, index) => {
+                const quantity = index + 1;
+                return `${quantity} ширхэг: ${(quantity * price).toLocaleString("mn-MN")}₮`;
+              }).join("\n");
+            }
+          },
+          {
+            id: "monthly-savings",
+            projectTag: "Төсөл 10",
+            title: "Утасны мөнгө",
+            description: "Сар бүр хадгалах мөнгө болон хугацаагаар хуримтлалын хүснэгт гаргана.",
+            fields: [
+              { name: "monthlyAmount", label: "Сар бүр хадгалах мөнгө (₮)", min: 0 },
+              { name: "months", label: "Хэдэн сар?", integer: true, min: 1, max: 1200 },
+            ],
+            run({ monthlyAmount, months }) {
+              return Array.from({ length: months }, (_, index) => {
+                const total = monthlyAmount * (index + 1);
+                return `${index + 1}-р сар: ${(total).toLocaleString("mn-MN")}₮`;
+              }).join("\n");
+            }
+          },
+          {
+            id: "candy-sharing",
+            projectTag: "Төсөл 11",
+            title: "Чихэр хуваах",
+            description: "Чихрийг тэнцүү хувааж болох бүх хувилбарыг олно.",
+            fields: [{ name: "candy", label: "Нийт чихэр", integer: true, min: 1, max: 100000 }],
+            run({ candy }) {
+              const options = [];
+              for (let people = 1; people <= candy; people++) {
+                if (candy % people === 0) {
+                  options.push(`${people} хүнд ${candy / people} ширхэг`);
+                }
+              }
+              if (options.length === 2) options.push("Тайлбар: Энэ бол Анхны тоо юм.");
+              return options.join("\n");
+            }
+          },
+          {
+            id: "chess-rice",
+            projectTag: "Төсөл 12",
+            title: "Шатрын будаа",
+            description: "Нүд бүр дээр өмнөхөөсөө хоёр дахин их будаа тавихад нийт хэд болохыг тооцно.",
+            fields: [{ name: "squares", label: "Шатрын нүдний тоо (1-64)", integer: true, min: 1, max: 64 }],
+            run({ squares }) {
+              return `${(2n ** BigInt(squares) - 1n).toLocaleString("mn-MN")} будаа`;
+            }
+          },
+          {
+            id: "records",
+            projectTag: "Төсөл 13",
+            title: "Рекорд",
+            description: "Оруулсан рекордуудаас хамгийн их болон хамгийн бага утгыг олно.",
+            fields: [
+              {
+                name: "records",
+                label: "Рекордны утгууд",
+                type: "text",
+                placeholder: "Жишээ: 1200, 3400, 900, 5100",
+                hint: "Тоонуудыг таслал эсвэл зайгаар тусгаарлана уу.",
+              },
+            ],
+            run({ records }) {
+              const values = records.split(/[,\s]+/).filter(Boolean).map(Number);
+              if (values.length === 0 || values.some((value) => !Number.isFinite(value))) {
+                throw new Error("Рекордонд зөв тоонууд оруулна уу.");
+              }
+              return `Рекорд (Хамгийн их): ${Math.max(...values).toLocaleString("mn-MN")}\nХамгийн бага: ${Math.min(...values).toLocaleString("mn-MN")}`;
+            }
+          },
+          {
+            id: "anime-picker",
+            projectTag: "Төсөл 14",
+            title: "Өнөөдөр юу үзэх вэ?",
+            description: "Өөрийн үзэх жагсаалтаас өнөөдөр үзэхийг санамсаргүй сонгоно.",
+            fields: [
+              {
+                name: "anime",
+                label: "Анимэний жагсаалт",
+                type: "text",
+                placeholder: "Жишээ: Naruto, One Piece, Demon Slayer, Attack on Titan",
+                hint: "Нэрсийг таслал эсвэл шинэ мөрөөр тусгаарлана уу.",
+              },
+            ],
+            run({ anime }) {
+              const choices = anime.split(/[,\n]+/).map((name) => name.trim()).filter(Boolean);
+              if (choices.length === 0) throw new Error("Анимэний нэрсээ оруулна уу.");
+              const choice = choices[Math.floor(Math.random() * choices.length)];
+              return `🎉 Өнөөдөр үзэх: ${choice}`;
+            }
+          }
+        ];
+
+        // UI references
+        const exerciseList = document.querySelector("#exercise-list");
+        const searchInput = document.querySelector("#search");
+        const countLabel = document.querySelector("#exercise-count");
+        const form = document.querySelector("#exercise-form");
+        const title = document.querySelector("#exercise-title");
+        const lessonBadge = document.querySelector("#exercise-lesson-badge");
+        const description = document.querySelector("#exercise-description");
+        const fieldsContainer = document.querySelector("#exercise-fields");
+        const runButton = document.querySelector("#run-button");
+        const resultPanel = document.querySelector("#result");
+        const resultContent = document.querySelector("#result-content");
+        const copyResultBtn = document.querySelector("#copy-result-btn");
+
+        let selectedExercise = null;
+
+        function renderList() {
+          const query = searchInput.value.trim().toLocaleLowerCase();
+          const filtered = exercises.filter((ex) => {
+            return `${ex.title} ${ex.projectTag} ${ex.description}`.toLocaleLowerCase().includes(query);
+          });
+
+          exerciseList.replaceChildren();
+          countLabel.textContent = `${filtered.length} төсөл`;
+
+          for (const ex of filtered) {
+            const item = document.createElement("button");
+            item.type = "button";
+            item.className = "exercise-item";
+            if (selectedExercise?.id === ex.id) {
+              item.classList.add("is-active");
+            }
+            const tagSpan = document.createElement("span");
+            tagSpan.className = "exercise-item__tag";
+            tagSpan.textContent = ex.projectTag;
+
+            const titleSpan = document.createElement("span");
+            titleSpan.className = "exercise-item__title";
+            titleSpan.textContent = ex.title;
+
+            item.append(tagSpan, titleSpan);
+            item.addEventListener("click", () => selectExercise(ex));
+            exerciseList.append(item);
+          }
+
+          if (filtered.length === 0) {
+            const emptyP = document.createElement("p");
+            emptyP.style.padding = "20px";
+            emptyP.style.color = "#777";
+            emptyP.style.fontSize = "13px";
+            emptyP.textContent = "Тохирох төсөл олдсонгүй.";
+            exerciseList.append(emptyP);
+          }
+        }
+
+        function selectExercise(ex) {
+          selectedExercise = ex;
+          title.textContent = ex.title;
+          lessonBadge.textContent = `${ex.projectTag} · ИНТЕРАКТИВ ТӨСӨЛ`;
+          description.textContent = ex.description;
+          fieldsContainer.replaceChildren();
+          resultPanel.hidden = true;
+
+          for (const field of ex.fields || []) {
+            const label = document.createElement("label");
+            label.className = "field";
+            label.htmlFor = `field-${field.name}`;
+
+            const labelText = document.createElement("span");
+            labelText.className = "field__label";
+            labelText.textContent = field.label;
+
+            const input = document.createElement("input");
+            input.id = `field-${field.name}`;
+            input.name = field.name;
+            input.type = field.type || "number";
+            input.autocomplete = "off";
+            input.required = true;
+            input.placeholder = field.placeholder || "";
+
+            if (field.type !== "password" && field.type !== "text") {
+              input.inputMode = field.integer ? "numeric" : "decimal";
+              if (field.min !== undefined) input.min = String(field.min);
+              if (field.max !== undefined) input.max = String(field.max);
+              input.step = field.integer ? "1" : "any";
+            }
+
+            label.append(labelText, input);
+
+            if (field.hint) {
+              const hint = document.createElement("span");
+              hint.className = "field__hint";
+              hint.textContent = field.hint;
+              label.append(hint);
+            }
+
+            fieldsContainer.append(label);
+          }
+
+          runButton.querySelector("span").textContent = "Ажиллуулах";
+          renderList();
+        }
+
+        function showResult(content, isError = false) {
+          resultContent.textContent = content;
+          resultPanel.classList.toggle("result--error", isError);
+          resultPanel.hidden = false;
+          resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        // Search listener
+        searchInput.addEventListener("input", renderList);
+
+        // Form submit
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!selectedExercise) return;
+
+          const values = {};
+          for (const field of selectedExercise.fields || []) {
+            const input = form.elements.namedItem(field.name);
+            const raw = input.value.trim();
+
+            if (!raw) {
+              input.focus();
+              showResult(`${field.label} утгыг оруулна уу.`, true);
+              return;
+            }
+
+            if (field.type === "password" || field.type === "text") {
+              values[field.name] = raw;
+              continue;
+            }
+
+            const val = Number(raw);
+            if (!Number.isFinite(val)) {
+              input.focus();
+              showResult(`${field.label} зөв тоо оруулна уу.`, true);
+              return;
+            }
+
+            if (field.integer && !Number.isInteger(val)) {
+              input.focus();
+              showResult(`${field.label} бүхэл тоо байх ёстой.`, true);
+              return;
+            }
+
+            if (field.min !== undefined && val < field.min) {
+              input.focus();
+              showResult(`${field.label} ${field.min}-ээс багагүй байна.`, true);
+              return;
+            }
+
+            if (field.max !== undefined && val > field.max) {
+              input.focus();
+              showResult(`${field.label} ${field.max}-ээс ихгүй байна.`, true);
+              return;
+            }
+
+            values[field.name] = val;
+          }
+
+          try {
+            showResult(String(selectedExercise.run(values)));
+          } catch (err) {
+            console.error("Алдаа:", err);
+            showResult(err instanceof Error ? err.message : "Төслийг ажиллуулах үед алдаа гарлаа.", true);
+          }
+        });
+
+        // Copy button
+        copyResultBtn.addEventListener("click", () => {
+          if (!resultContent.textContent) return;
+          navigator.clipboard.writeText(resultContent.textContent).then(() => {
+            const originalText = copyResultBtn.textContent;
+            copyResultBtn.textContent = "Хуулагдлаа!";
+            setTimeout(() => {
+              copyResultBtn.textContent = originalText;
+            }, 1800);
+          });
+        });
+
+        // Keyboard search shortcut "/"
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.key === "/" &&
+            !(e.target instanceof HTMLInputElement) &&
+            !(e.target instanceof HTMLTextAreaElement)
+          ) {
+            e.preventDefault();
+            searchInput.focus();
+          }
+        });
+
+        // Burger & mobile menu
+        const burger = document.querySelector(".burger");
+        const nav = document.getElementById("site-nav");
+        const backdrop = document.querySelector(".menu-backdrop");
+        const navLinks = nav ? nav.querySelectorAll("a") : [];
+
+        function setMenuOpen(open) {
+          if (open) {
+            document.body.classList.add("menu-open");
+            burger?.setAttribute("aria-expanded", "true");
+            burger?.setAttribute("aria-label", "Close menu");
+          } else {
+            document.body.classList.remove("menu-open");
+            burger?.setAttribute("aria-expanded", "false");
+            burger?.setAttribute("aria-label", "Open menu");
+          }
+        }
+
+        burger?.addEventListener("click", () => {
+          const isOpen = document.body.classList.contains("menu-open");
+          setMenuOpen(!isOpen);
+        });
+
+        backdrop?.addEventListener("click", () => setMenuOpen(false));
+        navLinks.forEach((l) => l.addEventListener("click", () => setMenuOpen(false)));
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && document.body.classList.contains("menu-open")) {
+            setMenuOpen(false);
+          }
+        });
+
+        const mql = window.matchMedia("(min-width: 901px)");
+        const handleResize = (e) => {
+          if (e.matches && document.body.classList.contains("menu-open")) {
+            setMenuOpen(false);
+          }
+        };
+        mql.addEventListener ? mql.addEventListener("change", handleResize) : mql.addListener(handleResize);
+
+        // Initial render
+        renderList();
+        if (exercises.length > 0) {
+          selectExercise(exercises[0]);
+        }
+      })();
+    </script>
+  </body>
+</html>
